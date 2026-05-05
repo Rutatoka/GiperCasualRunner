@@ -6,11 +6,15 @@ public class DecisionData : ScriptableObject
     public string question;
     public ChoiceData choiceA;
     public ChoiceData choiceB;
+
 }
-[System.Serializable]public class ChoiceData
+[System.Serializable]
+public class ChoiceData
 {
     public string text;
-    public StatEffect[] effects;
+
+    public StatEffect primary;
+    public StatEffect secondary;
 }
 [System.Serializable]
 public class StatEffect

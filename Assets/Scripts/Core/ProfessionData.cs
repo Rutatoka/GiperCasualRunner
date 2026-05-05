@@ -4,15 +4,17 @@ using UnityEngine;
 public class ProfessionData : ScriptableObject
 {
     public string professionName;
-
-    public int tech;
-    public int human;
-    public int manager;
-    public int worker;
-    public int introvert;
-    public int extrovert;
-    public int analyst;
-    public int intuitive;
-    public int stability;
-    public int openness;
+    public ProfessionCategory category;
+    public float[] vector = new float[10];
+    public bool isCategory;
+    public enum ProfessionCategory
+    {
+        None = -1,
+        Key,
+        Creative,
+        Social,
+        Business,
+        Specialization,
+        Additional
+    }
 }
