@@ -73,3 +73,18 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Firebase large native plugins (these cause the >100MB error)
+*.bundle
+*.so
+/[Aa]ssets/Firebase/Plugins/x86_64/*.bundle
+/[Aa]ssets/Firebase/Plugins/x86_64/*.so
+/[Aa]ssets/Firebase/Plugins/x86/*.bundle
+/[Aa]ssets/Firebase/Plugins/x86/*.so
+/[Aa]ssets/Firebase/Plugins/arm64/*.bundle
+/[Aa]ssets/Firebase/Plugins/arm64/*.so
+
+# Large binary files commonly found in Unity projects
+*.dll
+*.dylib
+*.bin
