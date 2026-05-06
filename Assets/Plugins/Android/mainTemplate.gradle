@@ -1,3 +1,13 @@
+// 👇 ЭТУ СЕКЦИЮ ДОБАВИТЬ В САМЫЙ НАЧАЛО ФАЙЛА 👇
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://android-sdk.is.com/' }   // IronSource репозиторий
+    }
+}
+// 👆 КОНЕЦ ДОБАВЛЕННОЙ СЕКЦИИ 👆
+
 apply plugin: 'com.android.library'
 **APPLY_PLUGINS**
 
