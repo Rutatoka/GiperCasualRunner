@@ -62,7 +62,7 @@ public class UIManager : MonoBehaviour
         continueButton.onClick.AddListener(() =>
         {
             categoryResultPanel.SetActive(false);
-            FindFirstObjectByType<DecisionSystem>().ContinueToDirection();
+            FindAnyObjectByType<DecisionSystem>().ContinueToDirection();
         });
     }
   

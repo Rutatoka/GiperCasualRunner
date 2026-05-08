@@ -15,7 +15,7 @@ public class DecisionSystem : MonoBehaviour
     private bool inputLocked;
     private void Start()
     {
-        ui = FindFirstObjectByType<UIManager>();
+        ui = FindAnyObjectByType<UIManager>();
         ui.Bind(this);
 
         state = FlowState.CategoryTest;
