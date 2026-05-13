@@ -23,10 +23,8 @@ public class ResultManager : MonoBehaviour
         if (direction == null)
         {
             Debug.LogError("DirectionResult = null в ResultManager");
-
             professionText.text = "Результат не определён";
             descriptionText.text = "Ошибка расчёта направления.";
-
             SetupButton();
             return;
         }
@@ -41,10 +39,8 @@ public class ResultManager : MonoBehaviour
         if (filtered.Count == 0)
         {
             Debug.LogError("Нет направлений в категории: " + category);
-
             professionText.text = "Ошибка данных";
             descriptionText.text = "Нет направлений для выбранной категории.";
-
             SetupButton();
             return;
         }
@@ -71,13 +67,47 @@ public class ResultManager : MonoBehaviour
             $"{GetSafeRank(ranked, 2)}\n" +
             $"Уверенность: {confidence:0}";
 
-        SetupButton();
+        SetupButton(); // Теперь кнопка "Меню" сама вызывает рекламу
     }
 
     private void SetupButton()
     {
         menuButton.onClick.RemoveAllListeners();
-        menuButton.onClick.AddListener(GameManager.Instance.GoToMenu);
+        // 👇 Вместо прямого перехода — сначала реклама
+        menuButton.onClick.AddListener(TryShowAdThenMenu);
+    }
+
+    private void TryShowAdThenMenu()
+    {
+        menuButton.interactable = false; // Блокируем, чтобы не нажали дважды
+
+        if (RuStoreAdManager.Instance != null)
+        {
+            // Подписываемся на событие и запускаем рекламу
+            RuStoreAdManager.Instance.OnRewardedAdFinished.AddListener(OnAdFinished);
+            RuStoreAdManager.Instance.ShowRewardedAd();
+        }
+        else
+        {
+            // Если менеджер не найден — просто переходим
+            GoToMenu();
+        }
+    }
+
+    private void OnAdFinished()
+    {
+        if (RuStoreAdManager.Instance != null)
+            RuStoreAdManager.Instance.OnRewardedAdFinished.RemoveListener(OnAdFinished);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdateDailyTaskProgress("Посмотри рекламу", 1);
+        }
+        GoToMenu();
+    }
+
+    private void GoToMenu()
+    {
+        GameManager.Instance.GoToMenu();
     }
 
     private string GetSafeRank(List<(ProfessionData, float)> ranked, int index)
@@ -86,13 +116,10 @@ public class ResultManager : MonoBehaviour
             return "-";
 
         var item = ranked[index];
-
-        // защита от внезапного мусора
         if (item.Item1 == null || item.Item1.isCategory)
             return "-";
 
         float percent = Mathf.Clamp01(item.Item2) * 100f;
-
         return $"{item.Item1.professionName}\n<size=80%>{percent:0}% совпадения</size>";
     }
 }

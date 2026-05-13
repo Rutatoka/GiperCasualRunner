@@ -9,11 +9,20 @@ EditorBuildSettings:
     path: Assets/Scenes/Bootstrap.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Scenes/DailyTasksScene.unity
+    guid: f764a28ca2b7e164494bfa6cbbf72350
+  - enabled: 1
+    path: Assets/Scenes/ProfileScene.unity
+    guid: 712b948aabb90634ab5bcfa0c7a85300
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 5e855821e89f81e4bbdfd03067bfdee0
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 104ef239087098c4ca68baed9c1647dd
+  - enabled: 1
+    path: Assets/Scenes/ShopScene.unity
+    guid: 9fb6b13a4b7de5041a47e9c0df4da14c
   - enabled: 1
     path: Assets/Scenes/Result.unity
     guid: 9195d1ac011342b49b7be18fe40b7ded

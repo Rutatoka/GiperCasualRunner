@@ -1,11 +1,15 @@
 <dependencies>
   <packages>
     <package>com.google.android.gms:play-services-base:18.9.0</package>
+    <package>com.google.code.gson:gson:2.10.1</package>
     <package>com.google.firebase:firebase-analytics:23.0.0</package>
     <package>com.google.firebase:firebase-app-unity:13.6.0</package>
     <package>com.google.firebase:firebase-common:22.0.1</package>
     <package>com.google.firebase:firebase-firestore:26.0.2</package>
     <package>com.google.firebase:firebase-firestore-unity:13.6.0</package>
+    <package>ru.rustore.sdk:core:10.3.1</package>
+    <package>ru.rustore.sdk:installreferrer:10.3.1</package>
+    <package>ru.rustore.sdk:pay:10.3.1</package>
   </packages>
   <files>
     <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-app-unity/13.6.0/firebase-app-unity-13.6.0.aar</file>

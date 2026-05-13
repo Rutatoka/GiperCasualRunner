@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class BackgroundSpawner : MonoBehaviour
 {
-    public GameObject buildingPrefab;
-    public GameObject treePrefab;
+    public GameObject[] buildingPrefabs;
+    public GameObject[] treePrefabs;
     public Transform player;
 
     public int rowsOnScreen = 6;
@@ -33,15 +33,36 @@ public class BackgroundSpawner : MonoBehaviour
         GameObject row = new GameObject("Row");
         row.transform.position = Vector3.forward * spawnZ;
 
-        // деревья ближе
-        Create(treePrefab, new Vector3(-4f, 0, 0), row.transform, true);
-        Create(treePrefab, new Vector3(4f, 0, 0), row.transform, true);
+        // 🌳 Деревья — фиксированная X, но могут смещаться по Z в пределах ряда
+        GameObject randomTree = treePrefabs[Random.Range(0, treePrefabs.Length)];
+        Create(randomTree, new Vector3(-4f, 3f, Random.Range(-3f, 3f)), row.transform, true);
+        Create(randomTree, new Vector3(4f,3f, Random.Range(-3f, 3f)), row.transform, true);
 
-        // здания дальше
-        Create(buildingPrefab, new Vector3(-8f, 0, 0), row.transform, false);
-        Create(buildingPrefab, new Vector3(-12f, 0, 0), row.transform, false);
-        Create(buildingPrefab, new Vector3(8f, 0, 0), row.transform, false);
-        Create(buildingPrefab, new Vector3(12f, 0, 0), row.transform, false);
+        // 🏠 Дома — теперь идут ВДОЛЬ дороги (по Z)
+        // Левая сторона (X = -10f)
+        for (float z = -5f; z <= 5f; z += 3f)
+        {
+            GameObject randomBuilding = buildingPrefabs[Random.Range(1, buildingPrefabs.Length)];
+            Create(randomBuilding, new Vector3(-8f, 0f, z), row.transform, false);
+        }
+
+        // Правая сторона (X = 10f)
+        for (float z = -5f; z <= 5f; z += 3f)
+        {
+            GameObject randomBuilding = buildingPrefabs[Random.Range(1, buildingPrefabs.Length)];
+            Create(randomBuilding, new Vector3(8f, 0f, z), row.transform, false);
+        }
+
+        for (float z = -5f; z <= 5f; z += 3f)
+        {
+            GameObject randomBuilding = buildingPrefabs[0];
+            Create(randomBuilding, new Vector3(14f, 0f, z), row.transform, false);
+        }
+        for (float z = -5f; z <= 5f; z += 3f)
+        {
+            GameObject randomBuilding = buildingPrefabs[0];
+            Create(randomBuilding, new Vector3(-14f, 0f, z), row.transform, false);
+        }
 
         rows.Enqueue(row);
         spawnZ += rowLength;
@@ -49,25 +70,24 @@ public class BackgroundSpawner : MonoBehaviour
 
     void DeleteRow()
     {
-        Destroy(rows.Dequeue());
+        if (rows.Count > 0)
+            Destroy(rows.Dequeue());
     }
 
     void Create(GameObject prefab, Vector3 localPos, Transform parent, bool isTree)
     {
         GameObject obj = Instantiate(prefab, parent);
         obj.transform.localPosition = localPos;
-
-        float h = isTree ? Random.Range(2.5f, 5f) : Random.Range(3f, 8f);
-        float scaleXZ = isTree ? Random.Range(0.8f, 1.2f) : 1f;
-
-        obj.transform.localScale = new Vector3(scaleXZ, h, scaleXZ);
-
-        var renderer = obj.GetComponentInChildren<Renderer>();
-        if (renderer != null)
+        if (!isTree)
         {
-            Color baseColor = isTree ? new Color(0.2f, 0.6f, 0.2f) : Color.gray;
-            float v = Random.Range(-0.1f, 0.1f);
-            renderer.material.color = baseColor + new Color(v, v, v);
+            // 🔄 Зеркальное отражение через scale
+            Vector3 scale = obj.transform.localScale;
+            if (localPos.x > 0) // слева — смотрит вправо
+                scale.x = Mathf.Abs(scale.x); // положительный
+            else if (localPos.x < 0) // справа — смотрит влево
+                scale.x = -Mathf.Abs(scale.x); // отрицательный
+            obj.transform.localScale = scale;
         }
+
     }
 }

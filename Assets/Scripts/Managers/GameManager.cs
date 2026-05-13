@@ -5,45 +5,27 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    private int gems;
-
     public PlayerStats PlayerStats { get; private set; }
 
-    // =========================
-    // DATA
-    // =========================
-   // public List<CategoryData> categories;
     public List<ProfessionData> professions;
-
-    // =========================
-    // RESULTS
-    // =========================
     public ProfessionData.ProfessionCategory CategoryResult { get; private set; }
     public ProfessionData DirectionResult { get; private set; }
     public bool HasCategoryResult { get; private set; }
-    // =========================
-    // FLOW
-    // =========================
     public FlowState flowState;
-
-    // =========================
-    // STATE
-    // =========================
     public enum GameState
     {
         Bootstrap,
         Menu,
         Game,
-        Result
+        Result,
+        Shop,
+        DailyTasks,
+        Profile,
+        MiniGames
     }
 
     public GameState State { get; private set; }
     public bool IsPaused { get; private set; }
-
-    // =========================
-    // SINGLETON
-    // =========================
     private void Awake()
     {
         Debug.Log("GameManager Awake: " + this);
@@ -67,9 +49,33 @@ public class GameManager : MonoBehaviour
         GoToMenu();
     }
 
-    // =========================
-    // RESULTS SETTERS
-    // =========================
+    public void GoToShop()
+    {
+        State = GameState.Shop;
+        SceneManager.LoadScene("ShopScene");
+    }
+
+    public void GoToDailyTasks()
+    {
+        State = GameState.DailyTasks;
+        SceneManager.LoadScene("DailyTasksScene");
+    }
+
+    public void GoToProfile()
+    {
+        State = GameState.Profile;
+        SceneManager.LoadScene("ProfileScene");
+    }
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void GoToMiniGames()
+    {
+        State = GameState.MiniGames;
+        SceneManager.LoadScene("MiniGamesScene");
+    }
     public void SetCategoryResult(ProfessionData.ProfessionCategory result)
     {
         CategoryResult = result;
@@ -81,14 +87,31 @@ public class GameManager : MonoBehaviour
         DirectionResult = result;
     }
 
-    // =========================
-    // GAME FLOW
-    // =========================
-    public void AddGem()
+    public int GetGems()
     {
-        gems++;
+        return PlayerPrefs.GetInt("Gems", 0);
     }
 
+    public void AddGems(int amount)
+    {
+        int current = PlayerPrefs.GetInt("Gems", 0);
+        current += amount;
+        current = Mathf.Clamp(current, 0, 100);
+        PlayerPrefs.SetInt("Gems", current);
+        PlayerPrefs.Save();
+    }
+
+    public bool SpendGems(int amount)
+    {
+        int current = PlayerPrefs.GetInt("Gems", 0);
+        if (current >= amount)
+        {
+            PlayerPrefs.SetInt("Gems", current - amount);
+            PlayerPrefs.Save();
+            return true;
+        }
+        return false;
+    }
     public void GoToMenu()
     {
         State = GameState.Menu;
@@ -113,9 +136,36 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("Result");
     }
 
-    // =========================
-    // PAUSE
-    // =========================
+    public void UpdateDailyTaskProgress(string taskTitle, int amount)
+    {
+        string progressKey = $"daily_task_{taskTitle}_progress";
+        int currentProgress = PlayerPrefs.GetInt(progressKey, 0);
+        currentProgress += amount;
+        PlayerPrefs.SetInt(progressKey, currentProgress);
+        PlayerPrefs.Save();
+
+        Debug.Log($"Обновлён прогресс задания '{taskTitle}': {currentProgress}");
+    }
+
+    public void CompleteDailyTask(string taskTitle)
+    {
+        string key = $"daily_task_{taskTitle}_completed";
+        PlayerPrefs.SetInt(key, 1);
+        PlayerPrefs.Save();
+    }
+
+    public bool IsDailyTaskCompleted(string taskTitle)
+    {
+        string key = $"daily_task_{taskTitle}_completed";
+        return PlayerPrefs.GetInt(key, 0) == 1;
+    }
+
+    public int GetDailyTaskProgress(string taskTitle)
+    {
+        string progressKey = $"daily_task_{taskTitle}_progress";
+        return PlayerPrefs.GetInt(progressKey, 0);
+    }
+
     public void SetPaused(bool value)
     {
         IsPaused = value;

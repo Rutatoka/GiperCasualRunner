@@ -24,14 +24,18 @@ public class Gem : MonoBehaviour
         if (collected) return;
 
         collected = true;
-        HappinessSystem.Instance.Add(5);
+        HappinessSystem.Instance.Add(1);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdateDailyTaskProgress("Заработай монет", 1);
+        }
         Destroy(gameObject);
     }
 
     void Missed()
     {
         collected = true;
-        HappinessSystem.Instance.Add(-3);
+        HappinessSystem.Instance.Add(-1);
         Destroy(gameObject);
     }
 }

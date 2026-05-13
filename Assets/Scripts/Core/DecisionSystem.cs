@@ -10,12 +10,12 @@ public class DecisionSystem : MonoBehaviour
     private int index;
     private FlowState state;
 
-    private UIManager ui;
+    private GameUIManager ui;
     public DecisionTimer timer;
     private bool inputLocked;
     private void Start()
     {
-        ui = FindAnyObjectByType<UIManager>();
+        ui = FindAnyObjectByType<GameUIManager>();
         ui.Bind(this);
 
         state = FlowState.CategoryTest;
@@ -72,7 +72,10 @@ public class DecisionSystem : MonoBehaviour
             false,
             state
         );
-
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdateDailyTaskProgress("Пройди тест", 1);
+        }
         Next();
     }
     private void Next()
@@ -103,6 +106,7 @@ public class DecisionSystem : MonoBehaviour
             return;
         }
         ShowCurrent();
+       
     }
 
 
@@ -235,6 +239,7 @@ public class DecisionSystem : MonoBehaviour
         GameManager.Instance.SetDirectionResult(best);
 
         Debug.Log("Направление: " + best.professionName);
+       
     }
     public void ContinueToDirection()
     {
